@@ -1,0 +1,65 @@
+{% extends 'posts/base.html' %}
+
+{% block title %}{{ post.title }} - Hacker News Clone{% endblock %}
+
+{% block content %}
+    <div class="bg-white rounded-lg shadow p-6">
+        <h1 class="text-2xl font-bold mb-4">{{ post.title }}</h1>
+        
+        <div class="text-sm text-gray-600 mb-4">
+            {{ post.score }} points by 
+            <a href="{% url 'user_profile' post.author.username %}" class="hover:underline">
+                {{ post.author.username }}
+            </a>
+            {{ post.created_at|timesince }} ago
+        </div>
+
+        {% if post.url %}
+            <div class="mb-4">
+                <a href="{{ post.url }}" class="text-blue-500 hover:underline" target="_blank">
+                    {{ post.url }}
+                </a>
+            </div>
+        {% endif %}
+
+        {% if post.text %}
+            <div class="mb-6 prose max-w-none">
+                {{ post.text|linebreaks }}
+            </div>
+        {% endif %}
+
+        <hr class="my-6">
+
+        {% if comment_form %}
+            <form method="post" class="mb-6">
+                {% csrf_token %}
+                <h3 class="text-lg font-semibold mb-2">Add a comment</h3>
+                {{ comment_form.content }}
+                <button type="submit" class="mt-2 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                    Submit Comment
+                </button>
+            </form>
+        {% endif %}
+
+        <div class="space-y-4">
+            {% for comment in comments %}
+                <div class="border-l-2 border-gray-200 pl-4">
+                    <div class="text-sm text-gray-600 mb-2">
+                        <a href="{% url 'user_profile' comment.author.username %}" class="hover:underline">
+                            {{ comment.author.username }}
+                        </a>
+                        {{ comment.created_at|timesince }} ago
+                    </div>
+                    <div class="text-gray-900 mb-2">
+                        {{ comment.content|linebreaks }}
+                    </div>
+                    <div class="text-sm text-gray-500">
+                        {{ comment.score }} points
+                    </div>
+                </div>
+            {% empty %}
+                <p class="text-gray-500">No comments yet.</p>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

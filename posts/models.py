@@ -30,6 +30,10 @@ class Post(models.Model):
     def comment_count(self):
         return self.comments.count()
 
+    @comment_count.setter
+    def comment_count(self, value):
+        pass
+
 
 class Comment(models.Model):
     content = models.TextField()
